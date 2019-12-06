@@ -66,6 +66,26 @@ int GetNumberOfChildren(vector<Vec4i> hierarchy, int idx) {
 	}
 	return count;
 }
+
+vector<vector<Point>> GetChildren(int idx, vector<Vec4i> hierarchy, vector<vector<Point>> contours) {
+	vector<vector<Point>> contoursWithChildren;
+	for (; idx >= 0; idx = hierarchy[idx][0]) {
+		int numberOfChildren = GetNumberOfChildren(hierarchy, idx);
+		if (numberOfChildren <= 0)
+		{
+			continue;
+		}
+		if (numberOfChildren >= 2) {
+			contoursWithChildren.push_back(contours[idx]);
+			vector<vector<Point>> children = GetChildren(hierarchy[idx][2], hierarchy, contours);
+			for each (auto var in children)
+			{
+				contoursWithChildren.push_back(var);
+			}
+		}
+	}
+	return contoursWithChildren;
+}
 int main()
 {
 	Mat defaultImg = imread(FOLDER + "01default.jpg");
