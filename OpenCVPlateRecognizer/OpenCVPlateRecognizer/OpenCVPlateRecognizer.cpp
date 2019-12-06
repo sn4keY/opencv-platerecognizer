@@ -34,6 +34,12 @@ Mat Morphology(Mat grayscaleImg) {
 	return afterMorph;
 }
 
+Mat GetGaussianBlur(Mat morph) {
+	Mat blur;
+	GaussianBlur(morph, blur, Size(5, 5), 0);
+	return blur;
+}
+
 int main()
 {
 	Mat defaultImg = imread(FOLDER + "01default.jpg");
@@ -47,6 +53,11 @@ int main()
 	imshow("Grayscale + topHat - blackHat", afterMorph);
 	waitKey();
 	imwrite(FOLDER + "05aftermorph.jpg", afterMorph);
+
+	Mat gauss = GetGaussianBlur(afterMorph);
+	imshow("Gaussian blurred image", gauss);
+	waitKey();
+	imwrite(FOLDER + "06gauss.jpg", gauss);
 
 	return 0;
 }
