@@ -7,7 +7,7 @@
 using namespace cv;
 using namespace std;
 
-const string FOLDER = "D:\\Source\\OpenCVPlateRecognizer\\bmw\\";
+const string FOLDER = "D:\\Source\\OpenCVPlateRecognizer\\vw\\";
 RNG rng(12345);
 
 bool compareContourAreas(std::vector<cv::Point> contour1, std::vector<cv::Point> contour2) {
@@ -79,11 +79,11 @@ vector<vector<Point>> GetChildren(int idx, vector<Vec4i> hierarchy, vector<vecto
 	vector<vector<Point>> contoursWithChildren;
 	for (; idx >= 0; idx = hierarchy[idx][0]) {
 		int numberOfChildren = GetNumberOfChildren(hierarchy, idx);
-		if (numberOfChildren <= 0)
+		if (numberOfChildren == 0)
 		{
 			continue;
 		}
-		if (numberOfChildren >= 2) {
+		if (numberOfChildren >= 3) {
 			contoursWithChildren.push_back(contours[idx]);
 			vector<vector<Point>> children = GetChildren(hierarchy[idx][2], hierarchy, contours);
 			for each (auto var in children)
