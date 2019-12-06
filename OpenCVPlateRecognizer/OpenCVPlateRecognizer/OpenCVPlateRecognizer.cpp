@@ -103,6 +103,23 @@ vector<vector<Point>> GetContours(Mat thresh) {
 
 	return contoursWithChildren;
 }
+
+vector<vector<Point>> GetRectangles(vector<vector<Point>> contours) {
+	vector<vector<Point> > approx(contours.size());
+	vector<vector<Point>> rectangle;
+	int i = 0;
+	for each (auto var in contours)
+	{
+		double peri = arcLength(var, true);
+		approxPolyDP(var, approx[i], 0.04 * peri, true);
+		if (approx[i].size() == 4)
+		{
+			rectangle.push_back(approx[i]);
+		}
+		i++;
+	}
+	return rectangle;
+}
 int main()
 {
 	Mat defaultImg = imread(FOLDER + "01default.jpg");
@@ -143,5 +160,17 @@ int main()
 	imshow("Contours", contoursImg);
 	waitKey();
 	imwrite(FOLDER + "09contours.jpg", contoursImg);
+
+	Mat rectanglesImg = Mat::zeros(thresh.size(), CV_8UC3);
+	vector<vector<Point>> rectangles = GetRectangles(contours);
+	for (size_t i = 0; i < rectangles.size(); i++)
+	{
+		Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
+		drawContours(rectanglesImg, rectangles, (int)i, color); // thickness < 0 => kit�lt�s
+		//rectangle(rectanglesImg, boundingRect(rectangles[i]).tl(), boundingRect(rectangles[i]).br(), color, 2);
+	}
+	imshow("Plate likes", rectanglesImg);
+	waitKey();
+	imwrite(FOLDER + "10plates.jpg", rectanglesImg);
 	return 0;
 }
