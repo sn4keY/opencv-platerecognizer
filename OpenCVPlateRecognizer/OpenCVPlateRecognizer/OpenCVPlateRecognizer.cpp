@@ -45,6 +45,14 @@ Mat GetAdaptiveThreshold(Mat blur) {
 	adaptiveThreshold(blur, thresh, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 19, 9);
 	return thresh;
 }
+
+Mat GetCannyImg(Mat grayscaleImg) {
+	int thresh = 100;
+	Mat canny;
+	Canny(grayscaleImg, canny, thresh, thresh * 2);
+	return canny;
+}
+
 int main()
 {
 	Mat defaultImg = imread(FOLDER + "01default.jpg");
@@ -68,5 +76,11 @@ int main()
 	imshow("Adaptive threshold image", thresh);
 	waitKey();
 	imwrite(FOLDER + "07thresh.jpg", thresh);
+
+	Mat canny = GetCannyImg(grayscaleImg);
+	imshow("Canny edge detector", canny);
+	waitKey();
+	imwrite(FOLDER + "08canny.jpg", canny);
+
 	return 0;
 }
