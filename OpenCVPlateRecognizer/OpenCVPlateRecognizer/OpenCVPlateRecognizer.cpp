@@ -40,6 +40,11 @@ Mat GetGaussianBlur(Mat morph) {
 	return blur;
 }
 
+Mat GetAdaptiveThreshold(Mat blur) {
+	Mat thresh;
+	adaptiveThreshold(blur, thresh, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 19, 9);
+	return thresh;
+}
 int main()
 {
 	Mat defaultImg = imread(FOLDER + "01default.jpg");
@@ -59,5 +64,9 @@ int main()
 	waitKey();
 	imwrite(FOLDER + "06gauss.jpg", gauss);
 
+	Mat thresh = GetAdaptiveThreshold(gauss);
+	imshow("Adaptive threshold image", thresh);
+	waitKey();
+	imwrite(FOLDER + "07thresh.jpg", thresh);
 	return 0;
 }
