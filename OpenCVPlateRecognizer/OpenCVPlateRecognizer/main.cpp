@@ -2,12 +2,15 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
+#include <tesseract/baseapi.h>
+#include <leptonica/allheaders.h>
+#include "asprise_ocr_api.h"
 #include <iostream>
 
 using namespace cv;
 using namespace std;
 
-const string FOLDER = "D:\\Source\\OpenCVPlateRecognizer\\vw\\";
+const string FOLDER = "D:\\Source\\OpenCVPlateRecognizer\\dw\\";
 RNG rng(12345);
 
 bool compareContourAreas(std::vector<cv::Point> contour1, std::vector<cv::Point> contour2) {
@@ -207,6 +210,27 @@ int main()
 	imshow("Plate masked", masked);
 	waitKey();
 	imwrite(FOLDER + "12croppedplate.jpg", masked);
+
+	const char * libFolder = "D:\\Source\\OpenCVPlateRecognizer\\";
+	LIBRARY_HANDLE libHandle = dynamic_load_aocr_library(libFolder);
+	int setup = c_com_asprise_ocr_setup(false);
+	long long ptrToApi = c_com_asprise_ocr_start("eng", OCR_SPEED_FAST, NULL, NULL, NULL);
+	char * s = c_com_asprise_ocr_recognize(ptrToApi, (FOLDER + "12croppedplate.jpg").c_str(), -1, -1, -1, -1, -1,OCR_RECOGNIZE_TYPE_TEXT, OCR_OUTPUT_FORMAT_PLAINTEXT,NULL, NULL, NULL);
+
+	std::cout << "Returned: " << s << std::endl;
+	c_com_asprise_ocr_stop(ptrToApi);
+
+	dynamic_unload_aocr_library(libHandle);
+
+	//tesseract::TessBaseAPI api;
+	//if (api.Init("D:\\Source\\Tesseract\\tessdata", "eng")) {
+	//	fprintf(stderr, "Could not initialize tesseract.\n");
+	//	exit(1);
+	//}
+	//api->SetImage((uchar*)masked.data, masked.size().width, masked.size().height, masked.channels(), masked.step1());
+	//api->Recognize(0);
+	//const char* out = api->GetUTF8Text();
+	//printf(out);
 
 	return 0;
 }
