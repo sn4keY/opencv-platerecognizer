@@ -120,6 +120,26 @@ vector<vector<Point>> GetRectangles(vector<vector<Point>> contours) {
 	}
 	return rectangle;
 }
+
+vector<Point> GetPlate(vector<vector<Point>> contours) {
+	vector<Point> plate;
+	for each (auto var in contours)
+	{
+		if ((var[1].y - var[0].y) < 5 && (var[2].y - var[3].y) < 5)
+		{
+			if ((var[1].x - var[2].x) < 10 && (var[3].x - var[0].x) < 10)
+			{
+				return var;
+			}
+		}
+	}
+	for (size_t i = 0; i < 4; i++)
+	{
+		plate.push_back(Point(0, 0));
+	}
+	return plate;
+}
+
 int main()
 {
 	Mat defaultImg = imread(FOLDER + "01default.jpg");
@@ -172,5 +192,21 @@ int main()
 	imshow("Plate likes", rectanglesImg);
 	waitKey();
 	imwrite(FOLDER + "10plates.jpg", rectanglesImg);
+
+	vector<Point> plate = GetPlate(rectangles);
+	vector<vector<Point>> plateWrapper;
+	plateWrapper.push_back(plate);
+	Mat plateImg = Mat::zeros(thresh.size(), CV_8UC3);
+	Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
+	drawContours(plateImg, plateWrapper, 0, color);
+	imshow("Plate contour", plateImg);
+	waitKey();
+	imwrite(FOLDER + "11plate.jpg", plateImg);
+
+	Mat masked = defaultImg(boundingRect(plateWrapper[0]));
+	imshow("Plate masked", masked);
+	waitKey();
+	imwrite(FOLDER + "12croppedplate.jpg", masked);
+
 	return 0;
 }
