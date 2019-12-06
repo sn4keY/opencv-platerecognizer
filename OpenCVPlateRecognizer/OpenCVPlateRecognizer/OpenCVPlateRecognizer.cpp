@@ -53,6 +53,19 @@ Mat GetCannyImg(Mat grayscaleImg) {
 	return canny;
 }
 
+int GetNumberOfChildren(vector<Vec4i> hierarchy, int idx) {
+	idx = hierarchy[idx][2];
+	if (idx < 0)
+		return 0;
+
+	int count = 1;
+	while (hierarchy[idx][0] > 0)
+	{
+		count++;
+		idx = hierarchy[idx][0];
+	}
+	return count;
+}
 int main()
 {
 	Mat defaultImg = imread(FOLDER + "01default.jpg");
