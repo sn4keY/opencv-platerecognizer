@@ -86,6 +86,15 @@ vector<vector<Point>> GetChildren(int idx, vector<Vec4i> hierarchy, vector<vecto
 	}
 	return contoursWithChildren;
 }
+
+vector<vector<Point>> GetContours(Mat thresh) {
+	vector<vector<Point>> contours;
+	vector<Vec4i> hierarchy;
+	findContours(thresh, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE);
+	vector<vector<Point>> contoursWithChildren = GetChildren(0, hierarchy, contours);
+
+	return contoursWithChildren;
+}
 int main()
 {
 	Mat defaultImg = imread(FOLDER + "01default.jpg");
@@ -115,5 +124,16 @@ int main()
 	waitKey();
 	imwrite(FOLDER + "08canny.jpg", canny);
 
+	Mat contoursImg = Mat::zeros(thresh.size(), CV_8UC3);
+	vector<vector<Point>> contours = GetContours(thresh);
+	for (size_t i = 0; i < contours.size(); i++)
+	{
+		Scalar color = Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
+		drawContours(contoursImg, contours, (int)i, color); // thickness < 0 => kit�lt�s
+		//rectangle(contoursImg, boundingRect(contours[i]).tl(), boundingRect(contours[i]).br(), color, 2);
+	}
+	imshow("Contours", contoursImg);
+	waitKey();
+	imwrite(FOLDER + "09contours.jpg", contoursImg);
 	return 0;
 }
