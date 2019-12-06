@@ -7,7 +7,14 @@
 using namespace cv;
 using namespace std;
 
-const string FOLDER = "D:\\Source\\OpenCVPlateRecognizer\\audi\\";
+const string FOLDER = "D:\\Source\\OpenCVPlateRecognizer\\bmw\\";
+RNG rng(12345);
+
+bool compareContourAreas(std::vector<cv::Point> contour1, std::vector<cv::Point> contour2) {
+	double i = fabs(contourArea(cv::Mat(contour1)));
+	double j = fabs(contourArea(cv::Mat(contour2)));
+	return (i > j);
+}
 
 Mat GetGrayscaleImg(Mat defaultImg) {
 	Mat hsv;
@@ -43,6 +50,7 @@ Mat GetGaussianBlur(Mat morph) {
 Mat GetAdaptiveThreshold(Mat blur) {
 	Mat thresh;
 	adaptiveThreshold(blur, thresh, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 19, 9);
+	//medianBlur(thresh, thresh, 3);
 	return thresh;
 }
 
